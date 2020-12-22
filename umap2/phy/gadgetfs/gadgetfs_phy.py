@@ -203,8 +203,11 @@ class GadgetFsPhy(PhyInterface):
 
     def send_on_ep0(self, data):
         if data:
-            os.write(self.control_fd, data)
-            self.debug('Done writing %d bytes to control endpoint (0)' % (len(data)))
+            try:
+                os.write(self.control_fd, data)
+                self.debug('Done writing %d bytes to control endpoint (0)' % (len(data)))
+            except OSError:
+                self.stall_ep0()
         else:
             self.stall_ep0()
 
